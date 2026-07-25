@@ -9,23 +9,30 @@
 
 :root{
   --bg:#0F1B2D;
-  --surface:#16233A;
-  --surface-2:#1E2E4A;
   --gold:#C6A15B;
   --gold-bright:#DDBB78;
   --cream:#EDE6D6;
   --wine:#9B4A4A;
   --sage:#6E9C81;
-  --muted:#7C8AA5;
-  --hairline:rgba(198,161,91,0.22);
+  --muted:#9AA8C4;
+  --hairline:rgba(198,161,91,0.28);
+
+  --glass:rgba(30,46,74,0.38);
+  --glass-soft:rgba(30,46,74,0.24);
+  --glass-strong:rgba(22,35,58,0.52);
+  --glass-border:rgba(237,230,214,0.10);
+  --glass-border-gold:rgba(198,161,91,0.35);
 }
 
 *{box-sizing:border-box;margin:0;padding:0;}
 
 body{
   background:
-    radial-gradient(ellipse 900px 500px at 15% -5%, rgba(198,161,91,0.10), transparent 60%),
+    radial-gradient(ellipse 900px 600px at 12% -10%, rgba(198,161,91,0.22), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 92% 10%, rgba(110,156,129,0.14), transparent 55%),
+    radial-gradient(ellipse 800px 700px at 30% 100%, rgba(155,74,74,0.10), transparent 55%),
     var(--bg);
+  background-attachment:fixed;
   color:var(--cream);
   font-family:'IBM Plex Sans', sans-serif;
   min-height:100vh;
@@ -34,7 +41,6 @@ body{
 
 .wrap{max-width:920px;margin:0 auto;}
 
-/* ---------- Header ---------- */
 header{
   display:flex;
   justify-content:space-between;
@@ -63,42 +69,103 @@ h1{
   font-size:13.5px;
   margin-top:6px;
 }
-.header-actions{display:flex;gap:8px;flex-wrap:wrap;}
-.edit-toggle, .sync-pill{
+.header-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+.role-switch{
+  display:inline-flex;
+  border:1px solid var(--glass-border);
+  border-radius:20px;
+  overflow:hidden;
+  background:var(--glass-soft);
+  backdrop-filter:blur(14px) saturate(150%);
+  -webkit-backdrop-filter:blur(14px) saturate(150%);
+}
+.role-switch button{
   background:transparent;
-  border:1px solid var(--hairline);
+  border:none;
+  color:var(--muted);
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11.5px;
+  letter-spacing:0.04em;
+  padding:8px 16px;
+  cursor:pointer;
+  transition:all 0.15s ease;
+}
+.role-switch button.active{
+  background:rgba(198,161,91,0.85);
+  color:var(--bg);
+  font-weight:600;
+}
+.role-switch button:not(.active):hover{color:var(--cream);}
+
+.row-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+.edit-toggle, .icon-btn{
+  background:var(--glass-soft);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--glass-border-gold);
   color:var(--gold);
   font-family:'IBM Plex Mono', monospace;
   font-size:12px;
   letter-spacing:0.04em;
   padding:9px 16px;
-  border-radius:3px;
+  border-radius:8px;
   cursor:pointer;
   transition:all 0.15s ease;
   white-space:nowrap;
 }
-.edit-toggle:hover{background:rgba(198,161,91,0.08);}
-.edit-toggle.active{background:var(--gold);color:var(--bg);border-color:var(--gold);}
-.sync-pill{cursor:default;font-size:11px;display:flex;align-items:center;gap:6px;}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
+.edit-toggle:hover, .icon-btn:hover{background:rgba(198,161,91,0.14);}
+.edit-toggle.active{background:rgba(198,161,91,0.85);color:var(--bg);border-color:var(--gold);}
+.sync-pill{
+  border:1px solid var(--glass-border);
+  background:var(--glass-soft);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  color:var(--gold);
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  letter-spacing:0.04em;
+  padding:9px 14px;
+  border-radius:8px;
+  white-space:nowrap;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;}
 .sync-pill.connected .sync-dot{background:var(--sage);box-shadow:0 0 6px var(--sage);}
 .sync-pill.local .sync-dot{background:var(--muted);}
 .sync-pill.error .sync-dot{background:var(--wine);}
 
-/* ---------- Stats strip ---------- */
+.reminder-banner{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--glass-soft);
+  backdrop-filter:blur(16px) saturate(150%);
+  -webkit-backdrop-filter:blur(16px) saturate(150%);
+  border:1px solid var(--glass-border-gold);
+  border-radius:10px;
+  padding:12px 16px;
+  margin-bottom:16px;
+  font-size:13px;
+  color:var(--cream);
+}
+.reminder-icon{font-size:15px;}
+
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:1px;
-  background:var(--hairline);
-  border:1px solid var(--hairline);
-  border-radius:6px;
-  overflow:hidden;
+  gap:12px;
   margin-bottom:28px;
 }
 .stat{
-  background:var(--surface);
+  background:var(--glass);
+  backdrop-filter:blur(18px) saturate(150%);
+  -webkit-backdrop-filter:blur(18px) saturate(150%);
+  border:1px solid var(--glass-border);
+  border-radius:12px;
   padding:16px 18px;
+  box-shadow:0 4px 24px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 .stat .num{
   font-family:'IBM Plex Mono', monospace;
@@ -114,12 +181,13 @@ h1{
   letter-spacing:0.06em;
 }
 
-/* ---------- Hero: This month's recipient ---------- */
 .hero{
   position:relative;
-  background:linear-gradient(155deg, var(--surface-2), var(--surface));
-  border:1px solid var(--hairline);
-  border-radius:10px;
+  background:var(--glass);
+  backdrop-filter:blur(22px) saturate(160%);
+  -webkit-backdrop-filter:blur(22px) saturate(160%);
+  border:1px solid var(--glass-border-gold);
+  border-radius:16px;
   padding:36px 36px;
   margin-bottom:28px;
   overflow:hidden;
@@ -128,14 +196,16 @@ h1{
   justify-content:space-between;
   gap:24px;
   flex-wrap:wrap;
+  box-shadow:0 8px 32px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.06);
 }
 .hero::before{
   content:"";
   position:absolute;
   inset:0;
-  background:radial-gradient(circle at 90% 10%, rgba(198,161,91,0.14), transparent 55%);
+  background:radial-gradient(circle at 90% 10%, rgba(198,161,91,0.20), transparent 55%);
   pointer-events:none;
 }
+.hero-left{width:100%;}
 .hero-left .eyebrow{
   font-family:'IBM Plex Mono', monospace;
   font-size:11px;
@@ -163,8 +233,24 @@ h1{
   font-size:22px;
   color:var(--muted);
 }
+.cycle-summary-list{
+  margin-top:14px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.cycle-summary-row{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  padding:8px 12px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--glass-border);
+  border-radius:8px;
+}
+.cycle-summary-row .csr-name{color:var(--cream);}
+.cycle-summary-row .csr-month{color:var(--muted);font-family:'IBM Plex Mono', monospace;font-size:11.5px;}
 
-/* seal — glowing & shining */
 .seal{
   position:relative;
   z-index:1;
@@ -177,7 +263,9 @@ h1{
   align-items:center;
   justify-content:center;
   transform:rotate(-6deg);
-  background:radial-gradient(circle, rgba(198,161,91,0.10), transparent 70%);
+  background:radial-gradient(circle, rgba(198,161,91,0.16), transparent 70%);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
   overflow:hidden;
   animation:sealGlow 2.6s ease-in-out infinite;
 }
@@ -221,23 +309,24 @@ h1{
   .seal::after{animation:none;display:none;}
 }
 
-.mark-btn{
+.mark-btn, .cycle-btn{
   margin-top:14px;
-  background:var(--gold);
+  background:rgba(198,161,91,0.85);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
   color:var(--bg);
-  border:none;
+  border:1px solid var(--gold-bright);
   font-family:'IBM Plex Mono', monospace;
   font-size:12px;
   font-weight:600;
   letter-spacing:0.03em;
   padding:10px 18px;
-  border-radius:3px;
+  border-radius:8px;
   cursor:pointer;
   transition:filter 0.15s ease;
 }
-.mark-btn:hover{filter:brightness(1.1);}
+.mark-btn:hover, .cycle-btn:hover{filter:brightness(1.1);}
 
-/* ---------- Payout order timeline ---------- */
 section.block{margin-bottom:28px;}
 .block-header{
   display:flex;
@@ -276,7 +365,7 @@ section.block{margin-bottom:28px;}
   left:-50%;
   width:100%;
   height:1px;
-  background:var(--hairline);
+  background:var(--glass-border-gold);
   z-index:0;
 }
 .tl-item:first-child .tl-line{display:none;}
@@ -293,17 +382,19 @@ section.block{margin-bottom:28px;}
   font-family:'IBM Plex Mono', monospace;
   font-size:13px;
   font-weight:600;
-  border:1.5px solid var(--hairline);
-  background:var(--surface);
+  border:1.5px solid var(--glass-border);
+  background:var(--glass);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
   color:var(--muted);
 }
 .tl-item.received .tl-dot{
-  background:var(--sage);
+  background:rgba(110,156,129,0.55);
   border-color:var(--sage);
   color:#0F1B2D;
 }
 .tl-item.current .tl-dot{
-  background:var(--gold);
+  background:rgba(198,161,91,0.85);
   border-color:var(--gold);
   color:var(--bg);
   box-shadow:0 0 0 4px rgba(198,161,91,0.18);
@@ -327,35 +418,61 @@ section.block{margin-bottom:28px;}
 }
 .tl-controls{display:flex;gap:4px;justify-content:center;margin-top:6px;}
 .tl-controls button{
-  background:transparent;
-  border:1px solid var(--hairline);
+  background:var(--glass-soft);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--glass-border);
   color:var(--muted);
   font-size:11px;
   width:22px;height:22px;
-  border-radius:3px;
+  border-radius:6px;
   cursor:pointer;
   line-height:1;
 }
 .tl-controls button:hover{color:var(--gold);border-color:var(--gold);}
 
-/* ---------- Ledger table ---------- */
-.ledger{
-  background:var(--surface);
-  border:1px solid var(--hairline);
+.ledger-toolbar{
+  display:flex;
+  gap:10px;
+  margin-bottom:12px;
+  flex-wrap:wrap;
+}
+.ledger-toolbar input, .ledger-toolbar select{
+  background:rgba(15,27,45,0.45);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--glass-border);
+  color:var(--cream);
+  font-family:'IBM Plex Sans', sans-serif;
+  font-size:13px;
+  padding:8px 12px;
   border-radius:8px;
+}
+.ledger-toolbar input{flex:1;min-width:160px;}
+.ledger-toolbar select{min-width:140px;}
+.ledger-toolbar input:focus, .ledger-toolbar select:focus{outline:none;border-color:var(--gold);}
+
+.ledger{
+  background:var(--glass-soft);
+  backdrop-filter:blur(20px) saturate(150%);
+  -webkit-backdrop-filter:blur(20px) saturate(150%);
+  border:1px solid var(--glass-border);
+  border-radius:14px;
   overflow:hidden;
+  box-shadow:0 4px 24px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 .ledger-row{
   display:grid;
   grid-template-columns:1fr 140px 100px;
   align-items:center;
   padding:13px 18px;
-  border-bottom:1px solid var(--hairline);
+  border-bottom:1px solid var(--glass-border);
   gap:12px;
 }
+.ledger-row.member-mode{grid-template-columns:1fr 140px;}
 .ledger-row:last-child{border-bottom:none;}
 .ledger-row.head{
-  background:var(--surface-2);
+  background:rgba(198,161,91,0.06);
   font-family:'IBM Plex Mono', monospace;
   font-size:10.5px;
   letter-spacing:0.08em;
@@ -363,7 +480,8 @@ section.block{margin-bottom:28px;}
   color:var(--muted);
   padding:10px 18px;
 }
-.member-name{font-size:14px;color:var(--cream);}
+.member-name{font-size:14px;color:var(--cream);cursor:pointer;}
+.member-name:hover{color:var(--gold-bright);text-decoration:underline;text-underline-offset:3px;}
 .member-name .order-badge{
   font-family:'IBM Plex Mono', monospace;
   font-size:10.5px;
@@ -377,15 +495,16 @@ section.block{margin-bottom:28px;}
   padding:5px 12px;
   border-radius:20px;
   text-align:center;
-  cursor:pointer;
-  user-select:none;
   border:1px solid transparent;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
   transition:filter 0.15s ease;
 }
-.status-pill:hover{filter:brightness(1.15);}
-.status-pill.paid{background:rgba(110,156,129,0.18);color:var(--sage);border-color:rgba(110,156,129,0.4);}
-.status-pill.pending{background:rgba(124,138,165,0.14);color:var(--muted);border-color:var(--hairline);}
-.status-pill.late{background:rgba(155,74,74,0.18);color:#D18888;border-color:rgba(155,74,74,0.4);}
+.status-pill.editable{cursor:pointer;user-select:none;}
+.status-pill.editable:hover{filter:brightness(1.15);}
+.status-pill.paid{background:rgba(110,156,129,0.22);color:var(--sage);border-color:rgba(110,156,129,0.45);}
+.status-pill.pending{background:rgba(154,168,196,0.14);color:var(--muted);border-color:var(--glass-border);}
+.status-pill.late{background:rgba(155,74,74,0.22);color:#D18888;border-color:rgba(155,74,74,0.45);}
 
 .remove-btn{
   background:transparent;
@@ -398,11 +517,12 @@ section.block{margin-bottom:28px;}
 }
 .remove-btn:hover{color:var(--wine);}
 
-/* ---------- Admin panel ---------- */
 .admin-panel{
-  background:var(--surface);
-  border:1px dashed var(--hairline);
-  border-radius:8px;
+  background:var(--glass-soft);
+  backdrop-filter:blur(20px) saturate(150%);
+  -webkit-backdrop-filter:blur(20px) saturate(150%);
+  border:1px dashed var(--glass-border-gold);
+  border-radius:14px;
   padding:18px;
   margin-top:14px;
   display:none;
@@ -426,34 +546,168 @@ section.block{margin-bottom:28px;}
   letter-spacing:0.06em;
   margin:14px 0 8px;
   padding-top:12px;
-  border-top:1px solid var(--hairline);
+  border-top:1px solid var(--glass-border);
 }
 .admin-section-title:first-child{border-top:none;margin-top:0;padding-top:0;}
 .admin-help{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.5;}
 input[type=text], input[type=number]{
-  background:var(--bg);
-  border:1px solid var(--hairline);
+  background:rgba(15,27,45,0.45);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--glass-border);
   color:var(--cream);
   font-family:'IBM Plex Sans', sans-serif;
   font-size:13px;
   padding:8px 12px;
-  border-radius:4px;
+  border-radius:8px;
   flex:1;
   min-width:140px;
 }
 input:focus{outline:none;border-color:var(--gold);}
 .add-btn, .save-btn{
-  background:var(--gold);
+  background:rgba(198,161,91,0.85);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
   color:var(--bg);
-  border:none;
+  border:1px solid var(--gold-bright);
   font-family:'IBM Plex Mono', monospace;
   font-size:12px;
   font-weight:600;
   padding:9px 16px;
-  border-radius:4px;
+  border-radius:8px;
   cursor:pointer;
 }
 .add-btn:hover, .save-btn:hover{filter:brightness(1.1);}
+
+.admin-list-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 12px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--glass-border);
+  border-radius:8px;
+  margin-bottom:6px;
+  font-size:13px;
+}
+
+.activity-log{
+  background:var(--glass-soft);
+  backdrop-filter:blur(18px) saturate(150%);
+  -webkit-backdrop-filter:blur(18px) saturate(150%);
+  border:1px solid var(--glass-border);
+  border-radius:14px;
+  padding:6px 0;
+  max-height:260px;
+  overflow-y:auto;
+}
+.log-row{
+  display:grid;
+  grid-template-columns:130px 100px 1fr;
+  gap:10px;
+  padding:9px 16px;
+  font-size:12px;
+  border-bottom:1px solid var(--glass-border);
+}
+.log-row:last-child{border-bottom:none;}
+.log-time{color:var(--muted);font-family:'IBM Plex Mono', monospace;font-size:11px;}
+.log-actor{color:var(--gold-bright);font-weight:600;}
+.log-action{color:var(--cream);}
+
+.empty-note{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  padding:30px;
+  font-family:'IBM Plex Mono', monospace;
+}
+
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(6,11,20,0.55);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+  padding:20px;
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:var(--glass-strong);
+  backdrop-filter:blur(28px) saturate(160%);
+  -webkit-backdrop-filter:blur(28px) saturate(160%);
+  border:1px solid var(--glass-border-gold);
+  border-radius:16px;
+  padding:26px 26px 22px;
+  width:100%;
+  max-width:360px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+  max-height:85vh;
+  overflow-y:auto;
+}
+.modal-title{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  font-size:18px;
+  color:var(--cream);
+  margin-bottom:6px;
+}
+.modal-sub{
+  font-size:12.5px;
+  color:var(--muted);
+  margin-bottom:16px;
+  line-height:1.5;
+}
+.modal-box input[type=password], .modal-box input[type=text]{
+  width:100%;
+  background:rgba(15,27,45,0.5);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--glass-border);
+  color:var(--cream);
+  font-family:'IBM Plex Mono', monospace;
+  font-size:15px;
+  padding:11px 14px;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+.modal-box input[type=password]{letter-spacing:0.2em;text-align:center;}
+.modal-box input:focus{outline:none;border-color:var(--gold);}
+.modal-error{
+  color:#D18888;
+  font-size:11.5px;
+  font-family:'IBM Plex Mono', monospace;
+  margin-bottom:10px;
+  min-height:14px;
+}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px;}
+.modal-btn-secondary{
+  background:var(--glass-soft);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--glass-border);
+  color:var(--muted);
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  padding:9px 16px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.modal-btn-secondary:hover{color:var(--cream);}
+
+.history-list{display:flex;flex-direction:column;gap:6px;margin-bottom:6px;}
+.history-row{
+  display:flex;
+  justify-content:space-between;
+  padding:8px 12px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--glass-border);
+  border-radius:8px;
+  font-size:13px;
+}
 
 footer{
   text-align:center;
@@ -463,10 +717,21 @@ footer{
   font-family:'IBM Plex Mono', monospace;
 }
 
+@media print{
+  body{background:#fff !important;color:#111 !important;padding:10px;}
+  .header-actions, #ledgerToolbar, .admin-panel, .tl-controls, .mark-btn, .cycle-btn, .remove-btn, .status-pill.editable, .role-switch, footer, .reminder-banner{display:none !important;}
+  .hero,.stat,.ledger,.activity-log,.tl-dot{background:#fff !important;border:1px solid #ccc !important;box-shadow:none !important;backdrop-filter:none !important;color:#111 !important;}
+  .hero-name,.stat .num,.block-title,h1,.member-name,.log-action,.log-actor{color:#111 !important;}
+  .seal{display:none;}
+}
+
 @media (max-width:560px){
   .stats{grid-template-columns:repeat(2,1fr);}
   .ledger-row{grid-template-columns:1fr 90px 60px;padding:12px;}
+  .ledger-row.member-mode{grid-template-columns:1fr 90px;}
   .hero{padding:26px 22px;flex-direction:column;align-items:flex-start;}
+  .header-actions{align-items:flex-start;width:100%;}
+  .log-row{grid-template-columns:1fr;gap:2px;}
 }
 </style>
 </head>
@@ -475,13 +740,21 @@ footer{
 
   <header>
     <div class="title-block">
-      <div class="eyebrow">Terms of Reference · Active Ledger</div>
+      <div class="eyebrow" id="modeEyebrow">Terms of Reference · Member View</div>
       <h1 id="circleTitle">Batch Savings & Welfare Circle</h1>
       <div class="subtitle" id="circleSub">PGDE Dzongkha Batch 2026 · Paro College of Education</div>
     </div>
     <div class="header-actions">
-      <div class="sync-pill local" id="syncPill"><span class="sync-dot"></span><span id="syncLabel">Local demo data</span></div>
-      <button class="edit-toggle" id="editToggle">✎ Edit Mode</button>
+      <div class="role-switch">
+        <button id="btnMemberRole" class="active">Member</button>
+        <button id="btnAdminRole">Admin</button>
+      </div>
+      <div class="row-right">
+        <button class="icon-btn" id="printBtn" title="Print this page">🖨 Print</button>
+        <button class="icon-btn" id="exportCsvBtn" title="Export ledger as CSV">⬇ Export</button>
+        <div class="sync-pill local" id="syncPill"><span class="sync-dot"></span><span id="syncLabel">Loading…</span></div>
+        <button class="edit-toggle" id="editToggle" style="display:none;">✎ Edit Mode</button>
+      </div>
     </div>
   </header>
 
@@ -502,8 +775,21 @@ footer{
       <div class="block-title">Monthly Contributions</div>
       <div class="block-sub" id="monthLabel">—</div>
     </div>
+
+    <div class="reminder-banner" id="reminderBanner"></div>
+
+    <div class="ledger-toolbar" id="ledgerToolbar">
+      <input type="text" id="searchMember" placeholder="Search member…">
+      <select id="filterStatus">
+        <option value="all">All statuses</option>
+        <option value="paid">Paid</option>
+        <option value="pending">Pending</option>
+        <option value="late">Late</option>
+      </select>
+    </div>
+
     <div class="ledger">
-      <div class="ledger-row head">
+      <div class="ledger-row head" id="ledgerHead">
         <div>Member</div>
         <div>Status</div>
         <div></div>
@@ -526,36 +812,89 @@ footer{
         <input type="number" id="inpMonthly" placeholder="500">
         <label>Cycle #</label>
         <input type="number" id="inpCycle" placeholder="1" style="max-width:80px;">
+      </div>
+      <div class="admin-row">
+        <label>Current Month</label>
+        <input type="text" id="inpCurrentMonth" placeholder="July 2026">
         <button class="save-btn" id="saveSettings">Save</button>
       </div>
+      <div class="admin-help">Changing "Current Month" from what it currently is will archive everyone's current contribution status into history and reset this month to Pending — use it when you're starting a new month.</div>
+
+      <div class="admin-section-title">Reminders & Late Fees</div>
+      <div class="admin-row">
+        <label>Due Date Note</label>
+        <input type="text" id="inpDueDate" placeholder="25th of each month">
+        <label>Late Fee (Nu.)</label>
+        <input type="number" id="inpLateFee" placeholder="0" style="max-width:100px;">
+      </div>
+
       <div class="admin-row" style="padding-top:4px;">
         <label>Add Member</label>
         <input type="text" id="inpNewMember" placeholder="Full name">
         <button class="add-btn" id="addMemberBtn">+ Add to order</button>
       </div>
 
-      <div class="admin-section-title">Google Sheet Sync</div>
+      <div class="admin-section-title">Manage Admins</div>
+      <div id="adminsList"></div>
       <div class="admin-row">
-        <label>Web App URL</label>
-        <input type="text" id="inpSheetsUrl" placeholder="https://script.google.com/macros/s/.../exec">
-        <button class="save-btn" id="connectSheetsBtn">Connect</button>
+        <button class="save-btn" id="addAdminBtn">+ Add Admin</button>
+        <button class="save-btn" id="changePinBtn">Change My PIN</button>
+        <button class="modal-btn-secondary" id="lockNowBtn">Lock now</button>
       </div>
-      <div class="admin-help">Paste the deployed Apps Script Web App URL here (see setup guide). Once connected, every save writes straight to the Google Sheet, and the sheet becomes the source of truth for all members.</div>
     </div>
   </section>
 
-  <footer id="footerNote">Loading ledger…</footer>
+  <section class="block">
+    <div class="block-header">
+      <div class="block-title">Activity Log</div>
+      <div class="block-sub">Transparency record</div>
+    </div>
+    <div class="activity-log" id="activityLog"></div>
+  </section>
+
+  <footer id="footerNote">Loading…</footer>
+</div>
+
+<div class="modal-overlay" id="pinOverlay">
+  <div class="modal-box">
+    <div class="modal-title" id="pinModalTitle">Enter Admin PIN</div>
+    <div class="modal-sub" id="pinModalSub">This unlocks editing for everyone using this device until you switch back to Member.</div>
+    <input type="text" id="pinNameInput" placeholder="Your name" autocomplete="off" style="display:none;">
+    <input type="password" id="pinInput" inputmode="numeric" maxlength="12" placeholder="••••" autocomplete="off">
+    <input type="password" id="pinConfirmInput" inputmode="numeric" maxlength="12" placeholder="Confirm PIN" autocomplete="off" style="display:none;">
+    <div class="modal-error" id="pinError"></div>
+    <div class="modal-actions">
+      <button class="modal-btn-secondary" id="pinCancelBtn">Cancel</button>
+      <button class="save-btn" id="pinSubmitBtn">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="historyOverlay">
+  <div class="modal-box">
+    <div class="modal-title" id="historyMemberName">Member</div>
+    <div class="modal-sub">Contribution history by month</div>
+    <div class="history-list" id="historyList"></div>
+    <div class="modal-actions">
+      <button class="modal-btn-secondary" id="historyCloseBtn">Close</button>
+    </div>
+  </div>
 </div>
 
 <script>
 (function(){
+  const SHEETS_URL = "https://script.google.com/macros/s/AKfycbwdUdXHRDi6Sfb1U81ulBXXTSrQyEG3xhGNPzk2xk5-_VxAqDoFhfH1X6itOvx6pQ5T/exec";
+
   const DEFAULT_STATE = {
     circleName: "Batch Savings & Welfare Circle",
     circleSub: "PGDE Dzongkha Batch 2026 · Paro College of Education",
     monthlyAmount: 500,
+    lateFeeAmount: 0,
     cycleNumber: 1,
     currentMonth: monthLabelNow(),
-    members: []
+    dueDateNote: "25th of each month",
+    members: [],
+    actionLog: []
   };
 
   function monthLabelNow(){
@@ -566,35 +905,73 @@ footer{
   function escapeHtml(s){
     return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
+  function fmtTime(ts){
+    return new Date(ts).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+  }
 
   let state = null;
+  let role = 'member';
   let editMode = false;
-  let sheetsUrl = '';
-  let syncStatus = 'local'; // local | connected | error
+  let syncStatus = 'local';
+  let lastSyncTime = null;
+  let searchTerm = '';
+  let filterStatus = 'all';
+  let currentAdminName = null;
+  let currentAdminId = null;
 
   const DATA_KEY = 'welfare-circle-state';
-  const CONFIG_KEY = 'welfare-circle-config';
+  const ROLE_KEY = 'welfare-circle-role';
+  const ADMINS_KEY = 'welfare-circle-admins';
+  const REFRESH_MS = 20000;
 
-  async function loadConfig(){
+  async function hashPin(pin){
+    const enc = new TextEncoder().encode('wcircle-salt::' + pin);
+    const buf = await crypto.subtle.digest('SHA-256', enc);
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+
+  async function loadAdminsList(){
     try{
-      const res = await window.storage.get(CONFIG_KEY, true);
-      const cfg = JSON.parse(res.value);
-      sheetsUrl = cfg.sheetsUrl || '';
-    }catch(e){ sheetsUrl = ''; }
+      const res = await window.storage.get(ADMINS_KEY, true);
+      return JSON.parse(res.value) || [];
+    }catch(e){ return []; }
+  }
+  async function saveAdminsList(list){
+    try{ await window.storage.set(ADMINS_KEY, JSON.stringify(list), true); }catch(e){}
   }
 
-  async function saveConfig(){
-    try{ await window.storage.set(CONFIG_KEY, JSON.stringify({sheetsUrl}), true); }catch(e){}
+  async function loadRole(){
+    try{
+      const res = await window.storage.get(ROLE_KEY, false);
+      role = res.value === 'admin' ? 'admin' : 'member';
+    }catch(e){ role = 'member'; }
+  }
+  async function saveRole(){
+    try{ await window.storage.set(ROLE_KEY, role, false); }catch(e){}
   }
 
-  async function loadState(){
-    await loadConfig();
-    if(sheetsUrl){
-      const ok = await loadFromSheets();
-      if(!ok) await loadFromLocal();
-    } else {
-      await loadFromLocal();
+  let pinAlreadyUnlockedThisSession = false;
+
+  async function init(){
+    await loadRole();
+    if(role === 'admin' && !pinAlreadyUnlockedThisSession){
+      role = 'member';
+      await saveRole();
     }
+    await refresh();
+    applyRoleUI();
+  }
+
+  function logAction(action){
+    state.actionLog = state.actionLog || [];
+    state.actionLog.unshift({ts: Date.now(), actor: currentAdminName || 'Admin', action});
+    if(state.actionLog.length > 50) state.actionLog.length = 50;
+  }
+
+  async function refresh(){
+    let ok = false;
+    if(SHEETS_URL){ ok = await loadFromSheets(); }
+    if(!ok){ await loadFromLocal(); }
     render();
   }
 
@@ -602,31 +979,45 @@ footer{
     try{
       const res = await window.storage.get(DATA_KEY, true);
       state = JSON.parse(res.value);
+      state.actionLog = state.actionLog || [];
+      state.members.forEach(m=>{ m.history = m.history || {}; if(m.receivedMonth===undefined) m.receivedMonth = null; });
+      if(state.lateFeeAmount===undefined) state.lateFeeAmount = 0;
+      if(state.dueDateNote===undefined) state.dueDateNote = "25th of each month";
+      syncStatus = SHEETS_URL ? 'error' : 'local';
+      lastSyncTime = new Date();
     }catch(e){
       state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-      await window.storage.set(DATA_KEY, JSON.stringify(state), true);
+      if(role === 'admin'){
+        try{ await window.storage.set(DATA_KEY, JSON.stringify(state), true); }catch(err){}
+      }
+      syncStatus = 'local';
     }
-    syncStatus = sheetsUrl ? 'error' : 'local';
   }
 
   async function loadFromSheets(){
     try{
-      const res = await fetch(sheetsUrl + '?action=load');
+      const res = await fetch(SHEETS_URL + '?action=load');
       if(!res.ok) throw new Error('bad response');
       const data = await res.json();
       state = {
         circleName: data.circleName || DEFAULT_STATE.circleName,
         circleSub: data.circleSub || DEFAULT_STATE.circleSub,
         monthlyAmount: Number(data.monthlyAmount) || DEFAULT_STATE.monthlyAmount,
+        lateFeeAmount: Number(data.lateFeeAmount) || 0,
         cycleNumber: Number(data.cycleNumber) || 1,
         currentMonth: data.currentMonth || monthLabelNow(),
+        dueDateNote: data.dueDateNote || "25th of each month",
+        actionLog: Array.isArray(data.actionLog) ? data.actionLog : [],
         members: Array.isArray(data.members) ? data.members.map(m=>({
           id: m.id, name: m.name,
           received: m.received === true || m.received === 'TRUE' || m.received === 'true',
-          contribution: m.contribution || 'pending'
+          receivedMonth: m.receivedMonth || null,
+          contribution: m.contribution || 'pending',
+          history: m.history && typeof m.history === 'object' ? m.history : {}
         })) : []
       };
       syncStatus = 'connected';
+      lastSyncTime = new Date();
       return true;
     }catch(e){
       syncStatus = 'error';
@@ -635,22 +1026,22 @@ footer{
   }
 
   async function persist(){
-    if(sheetsUrl){
+    if(SHEETS_URL){
       try{
-        await fetch(sheetsUrl, {
+        await fetch(SHEETS_URL, {
           method:'POST',
           headers:{'Content-Type':'text/plain;charset=utf-8'},
           body: JSON.stringify(state)
         });
         syncStatus = 'connected';
-      }catch(e){
-        syncStatus = 'error';
-      }
+        lastSyncTime = new Date();
+      }catch(e){ syncStatus = 'error'; }
     } else {
       try{
         await window.storage.set(DATA_KEY, JSON.stringify(state), true);
         syncStatus = 'local';
-      }catch(e){ /* best effort */ }
+        lastSyncTime = new Date();
+      }catch(e){}
     }
     updateSyncPill();
   }
@@ -659,13 +1050,32 @@ footer{
     const pill = document.getElementById('syncPill');
     const label = document.getElementById('syncLabel');
     pill.className = 'sync-pill ' + syncStatus;
-    if(syncStatus === 'connected') label.textContent = 'Synced to Google Sheet';
-    else if(syncStatus === 'error') label.textContent = 'Sheet unreachable — using local copy';
-    else label.textContent = 'Local demo data (not yet connected)';
+    const timeStr = lastSyncTime ? ' · ' + lastSyncTime.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '';
+    if(syncStatus === 'connected') label.textContent = 'Synced to Sheet' + timeStr;
+    else if(syncStatus === 'error') label.textContent = 'Sheet unreachable — last saved copy';
+    else label.textContent = 'Local demo data' + timeStr;
   }
 
   function currentRecipient(){
     return state.members.find(m => !m.received) || null;
+  }
+  function labelFor(status){
+    return status === 'paid' ? 'Paid' : status === 'late' ? 'Late' : 'Pending';
+  }
+
+  function applyRoleUI(){
+    document.getElementById('btnMemberRole').classList.toggle('active', role==='member');
+    document.getElementById('btnAdminRole').classList.toggle('active', role==='admin');
+    document.getElementById('modeEyebrow').textContent = role==='admin'
+      ? 'Terms of Reference · Admin Dashboard'
+      : 'Terms of Reference · Member View';
+    document.getElementById('editToggle').style.display = role==='admin' ? 'inline-block' : 'none';
+    if(role === 'member' && editMode){
+      editMode = false;
+      document.getElementById('editToggle').classList.remove('active');
+      document.getElementById('editToggle').textContent = '✎ Edit Mode';
+    }
+    render();
   }
 
   function render(){
@@ -675,9 +1085,15 @@ footer{
     document.getElementById('cycleLabel').textContent = 'CYCLE ' + state.cycleNumber;
     document.getElementById('monthLabel').textContent = state.currentMonth;
 
+    document.getElementById('reminderBanner').innerHTML = `
+      <span class="reminder-icon">⏰</span>
+      <span>Payments due by <strong>${escapeHtml(state.dueDateNote || '—')}</strong>${state.lateFeeAmount ? ` · Late fee: Nu. ${state.lateFeeAmount}` : ''}</span>
+    `;
+
     const totalMembers = state.members.length;
     const paidCount = state.members.filter(m=>m.contribution==='paid').length;
-    const pool = (state.monthlyAmount * totalMembers) || 0;
+    const lateCount = state.members.filter(m=>m.contribution==='late').length;
+    const pool = (state.monthlyAmount * totalMembers) + (state.lateFeeAmount * lateCount) || 0;
     document.getElementById('statsRow').innerHTML = `
       <div class="stat"><div class="num">${totalMembers}</div><div class="label">Members</div></div>
       <div class="stat"><div class="num">Nu. ${state.monthlyAmount}</div><div class="label">Monthly / member</div></div>
@@ -686,111 +1102,353 @@ footer{
     `;
 
     const rec = currentRecipient();
+    const isAdmin = role === 'admin';
     const hero = document.getElementById('heroSection');
     if(!state.members.length){
       hero.innerHTML = `<div class="hero-left"><div class="eyebrow">This Month's Recipient</div><div class="hero-none">No members added yet</div></div>`;
     } else if(!rec){
-      hero.innerHTML = `<div class="hero-left"><div class="eyebrow">This Month's Recipient</div><div class="hero-none">All members have received this cycle</div></div>`;
+      const rows = state.members.map(m=>`
+        <div class="cycle-summary-row"><span class="csr-name">${escapeHtml(m.name)}</span><span class="csr-month">${escapeHtml(m.receivedMonth || '—')}</span></div>
+      `).join('');
+      hero.innerHTML = `
+        <div class="hero-left">
+          <div class="eyebrow">Cycle ${state.cycleNumber} Complete</div>
+          <div class="hero-none">All members have received this cycle</div>
+          <div class="cycle-summary-list">${rows}</div>
+          ${isAdmin ? `<button class="cycle-btn" id="startCycleBtn">Start New Cycle</button>` : ''}
+        </div>
+      `;
+      if(isAdmin){
+        document.getElementById('startCycleBtn').onclick = async ()=>{
+          if(!confirm("Start a new cycle? This resets everyone's received status.")) return;
+          state.members.forEach(m=>{ m.received=false; m.receivedMonth=null; });
+          state.cycleNumber = (state.cycleNumber||1) + 1;
+          logAction(`Started Cycle ${state.cycleNumber}`);
+          await persist();
+          render();
+        };
+      }
     } else {
       hero.innerHTML = `
         <div class="hero-left">
-          <div class="eyebrow">This Month's Recipient — ${state.currentMonth}</div>
+          <div class="eyebrow">This Month's Recipient — ${escapeHtml(state.currentMonth)}</div>
           <div class="hero-name">${escapeHtml(rec.name)}</div>
           <div class="hero-meta">Position ${state.members.indexOf(rec)+1} of ${state.members.length} in draw order</div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;">
           <div class="seal"><div class="seal-text">CYCLE<br>${state.cycleNumber}</div></div>
-          <button class="mark-btn" id="markReceivedBtn">Mark as Received</button>
+          ${isAdmin ? `<button class="mark-btn" id="markReceivedBtn">Mark as Received</button>` : ''}
         </div>
       `;
-      document.getElementById('markReceivedBtn').onclick = async ()=>{
-        rec.received = true;
-        await persist();
-        render();
-      };
+      if(isAdmin){
+        document.getElementById('markReceivedBtn').onclick = async ()=>{
+          if(!confirm(`Mark ${rec.name} as having received this cycle's payout for ${state.currentMonth}?`)) return;
+          rec.received = true;
+          rec.receivedMonth = state.currentMonth;
+          logAction(`Marked ${rec.name} as received (${state.currentMonth})`);
+          await persist();
+          render();
+        };
+      }
     }
 
     const tl = document.getElementById('timeline');
-    tl.innerHTML = '';
-    state.members.forEach((m, i)=>{
-      const isCurrent = rec && m.id === rec.id;
-      const div = document.createElement('div');
-      div.className = 'tl-item' + (m.received ? ' received' : '') + (isCurrent ? ' current' : '');
-      div.innerHTML = `
-        <div class="tl-line"></div>
-        <div class="tl-dot">${m.received ? '✓' : (i+1)}</div>
-        <div class="tl-name">${escapeHtml(m.name)}</div>
-        <div class="tl-status">${m.received ? 'Received' : (isCurrent ? 'Current turn' : 'Upcoming')}</div>
-        ${editMode ? `<div class="tl-controls">
-          <button data-act="up" data-id="${m.id}" title="Move earlier">↑</button>
-          <button data-act="down" data-id="${m.id}" title="Move later">↓</button>
-          <button data-act="toggle" data-id="${m.id}" title="Toggle received">⟲</button>
-        </div>` : ''}
-      `;
-      tl.appendChild(div);
-    });
-    tl.querySelectorAll('button[data-act]').forEach(btn=>{
-      btn.onclick = async ()=>{
-        const id = btn.dataset.id;
-        const idx = state.members.findIndex(m=>m.id===id);
-        if(btn.dataset.act==='up' && idx>0){
-          [state.members[idx-1], state.members[idx]] = [state.members[idx], state.members[idx-1]];
-        } else if(btn.dataset.act==='down' && idx<state.members.length-1){
-          [state.members[idx+1], state.members[idx]] = [state.members[idx], state.members[idx+1]];
-        } else if(btn.dataset.act==='toggle'){
-          state.members[idx].received = !state.members[idx].received;
-        }
-        await persist();
-        render();
-      };
-    });
+    if(!state.members.length){
+      tl.innerHTML = `<div class="empty-note">No payout order set yet.</div>`;
+    } else {
+      tl.innerHTML = '';
+      state.members.forEach((m, i)=>{
+        const isCurrent = rec && m.id === rec.id;
+        const div = document.createElement('div');
+        div.className = 'tl-item' + (m.received ? ' received' : '') + (isCurrent ? ' current' : '');
+        div.innerHTML = `
+          <div class="tl-line"></div>
+          <div class="tl-dot">${m.received ? '✓' : (i+1)}</div>
+          <div class="tl-name">${escapeHtml(m.name)}</div>
+          <div class="tl-status">${m.received ? 'Received' : (isCurrent ? 'Current turn' : 'Upcoming')}</div>
+          ${(isAdmin && editMode) ? `<div class="tl-controls">
+            <button data-act="up" data-id="${m.id}" title="Move earlier">↑</button>
+            <button data-act="down" data-id="${m.id}" title="Move later">↓</button>
+            <button data-act="toggle" data-id="${m.id}" title="Toggle received">⟲</button>
+          </div>` : ''}
+        `;
+        tl.appendChild(div);
+      });
+      if(isAdmin && editMode){
+        tl.querySelectorAll('button[data-act]').forEach(btn=>{
+          btn.onclick = async ()=>{
+            const id = btn.dataset.id;
+            const idx = state.members.findIndex(m=>m.id===id);
+            if(btn.dataset.act==='up' && idx>0){
+              [state.members[idx-1], state.members[idx]] = [state.members[idx], state.members[idx-1]];
+            } else if(btn.dataset.act==='down' && idx<state.members.length-1){
+              [state.members[idx+1], state.members[idx]] = [state.members[idx], state.members[idx+1]];
+            } else if(btn.dataset.act==='toggle'){
+              if(!confirm(`Toggle received status for ${state.members[idx].name}?`)) return;
+              state.members[idx].received = !state.members[idx].received;
+              state.members[idx].receivedMonth = state.members[idx].received ? state.currentMonth : null;
+              logAction(`Toggled received status for ${state.members[idx].name}`);
+            }
+            await persist();
+            render();
+          };
+        });
+      }
+    }
+
+    document.getElementById('ledgerHead').innerHTML = isAdmin
+      ? `<div>Member</div><div>Status</div><div></div>`
+      : `<div>Member</div><div>Status</div>`;
 
     const body = document.getElementById('ledgerBody');
-    body.innerHTML = '';
-    state.members.forEach((m, i)=>{
-      const row = document.createElement('div');
-      row.className = 'ledger-row';
-      row.innerHTML = `
-        <div class="member-name"><span class="order-badge">${String(i+1).padStart(2,'0')}</span>${escapeHtml(m.name)}</div>
-        <div><span class="status-pill ${m.contribution}" data-id="${m.id}">${labelFor(m.contribution)}</span></div>
-        <div>${editMode ? `<button class="remove-btn" data-id="${m.id}">Remove</button>` : ''}</div>
-      `;
-      body.appendChild(row);
-    });
-    body.querySelectorAll('.status-pill').forEach(pill=>{
-      pill.onclick = async ()=>{
-        const id = pill.dataset.id;
-        const m = state.members.find(x=>x.id===id);
-        const order = ['pending','paid','late'];
-        m.contribution = order[(order.indexOf(m.contribution)+1) % order.length];
-        await persist();
-        render();
-      };
-    });
-    body.querySelectorAll('.remove-btn').forEach(btn=>{
-      btn.onclick = async ()=>{
-        state.members = state.members.filter(m=>m.id!==btn.dataset.id);
-        await persist();
-        render();
-      };
-    });
+    let visibleMembers = state.members;
+    if(searchTerm) visibleMembers = visibleMembers.filter(m=>m.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    if(filterStatus !== 'all') visibleMembers = visibleMembers.filter(m=>m.contribution === filterStatus);
 
-    document.getElementById('adminPanel').classList.toggle('open', editMode);
-    if(editMode){
+    if(!state.members.length){
+      body.innerHTML = `<div class="empty-note">No members added yet.</div>`;
+    } else if(!visibleMembers.length){
+      body.innerHTML = `<div class="empty-note">No members match your search or filter.</div>`;
+    } else {
+      body.innerHTML = '';
+      visibleMembers.forEach((m)=>{
+        const i = state.members.indexOf(m);
+        const row = document.createElement('div');
+        row.className = 'ledger-row' + (isAdmin ? '' : ' member-mode');
+        row.innerHTML = `
+          <div class="member-name" data-hist-id="${m.id}"><span class="order-badge">${String(i+1).padStart(2,'0')}</span>${escapeHtml(m.name)}</div>
+          <div><span class="status-pill ${m.contribution}${isAdmin ? ' editable' : ''}" data-id="${m.id}">${labelFor(m.contribution)}</span></div>
+          ${isAdmin ? `<div>${editMode ? `<button class="remove-btn" data-id="${m.id}">Remove</button>` : ''}</div>` : ''}
+        `;
+        body.appendChild(row);
+      });
+      body.querySelectorAll('.member-name').forEach(el=>{
+        el.onclick = ()=>{
+          const m = state.members.find(x=>x.id===el.dataset.histId);
+          if(m) openHistoryModal(m);
+        };
+      });
+      if(isAdmin){
+        body.querySelectorAll('.status-pill').forEach(pill=>{
+          pill.onclick = async ()=>{
+            const id = pill.dataset.id;
+            const m = state.members.find(x=>x.id===id);
+            const order = ['pending','paid','late'];
+            m.contribution = order[(order.indexOf(m.contribution)+1) % order.length];
+            logAction(`Set ${m.name}'s ${state.currentMonth} status to ${labelFor(m.contribution)}`);
+            await persist();
+            render();
+          };
+        });
+        body.querySelectorAll('.remove-btn').forEach(btn=>{
+          btn.onclick = async ()=>{
+            const m = state.members.find(x=>x.id===btn.dataset.id);
+            if(!m) return;
+            if(!confirm(`Remove ${m.name} from the circle? This cannot be undone.`)) return;
+            state.members = state.members.filter(x=>x.id!==btn.dataset.id);
+            logAction(`Removed member ${m.name}`);
+            await persist();
+            render();
+          };
+        });
+      }
+    }
+
+    document.getElementById('adminPanel').classList.toggle('open', isAdmin && editMode);
+    if(isAdmin && editMode){
       document.getElementById('inpCircleName').value = state.circleName;
       document.getElementById('inpCircleSub').value = state.circleSub;
       document.getElementById('inpMonthly').value = state.monthlyAmount;
       document.getElementById('inpCycle').value = state.cycleNumber;
-      document.getElementById('inpSheetsUrl').value = sheetsUrl;
+      document.getElementById('inpCurrentMonth').value = state.currentMonth;
+      document.getElementById('inpDueDate').value = state.dueDateNote;
+      document.getElementById('inpLateFee').value = state.lateFeeAmount;
+      renderAdminsList();
     }
-    document.getElementById('footerNote').textContent = sheetsUrl
-      ? 'Source of truth: Google Sheet · shared with everyone who has this link'
-      : 'Shared ledger (local) · connect a Google Sheet in Edit Mode for a persistent source of truth';
+
+    const logEl = document.getElementById('activityLog');
+    if(!state.actionLog || !state.actionLog.length){
+      logEl.innerHTML = `<div class="empty-note">No actions recorded yet.</div>`;
+    } else {
+      logEl.innerHTML = state.actionLog.slice(0,20).map(e=>`
+        <div class="log-row">
+          <span class="log-time">${fmtTime(e.ts)}</span>
+          <span class="log-actor">${escapeHtml(e.actor)}</span>
+          <span class="log-action">${escapeHtml(e.action)}</span>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('footerNote').textContent = isAdmin
+      ? (SHEETS_URL ? 'Admin dashboard · writing to Google Sheet' : 'Admin dashboard · local shared data')
+      : 'Member view — read only. Ask your Treasurer or Chairperson to update records.';
   }
 
-  function labelFor(status){
-    return status === 'paid' ? 'Paid' : status === 'late' ? 'Late' : 'Pending';
+  async function renderAdminsList(){
+    const list = await loadAdminsList();
+    const el = document.getElementById('adminsList');
+    if(!list.length){
+      el.innerHTML = `<div class="empty-note">No admins registered yet.</div>`;
+      return;
+    }
+    el.innerHTML = list.map(a=>`
+      <div class="admin-list-row">
+        <span>${escapeHtml(a.name)}</span>
+        ${list.length>1 ? `<button class="remove-btn" data-admin-id="${a.id}">Remove</button>` : ''}
+      </div>
+    `).join('');
+    el.querySelectorAll('button[data-admin-id]').forEach(btn=>{
+      btn.onclick = async ()=>{
+        if(!confirm('Remove this admin? They will need to be re-added to regain access.')) return;
+        let admins = await loadAdminsList();
+        const removed = admins.find(a=>a.id===btn.dataset.adminId);
+        admins = admins.filter(a=>a.id!==btn.dataset.adminId);
+        await saveAdminsList(admins);
+        if(removed){
+          logAction(`Removed admin ${removed.name}`);
+          await persist();
+        }
+        renderAdminsList();
+      };
+    });
   }
+
+  function openHistoryModal(member){
+    document.getElementById('historyMemberName').textContent = member.name;
+    const entries = Object.entries(member.history || {});
+    entries.push([state.currentMonth, member.contribution]);
+    const listEl = document.getElementById('historyList');
+    if(!entries.length){
+      listEl.innerHTML = `<div class="empty-note">No contribution history yet.</div>`;
+    } else {
+      listEl.innerHTML = entries.map(([month, status])=>`
+        <div class="history-row"><span>${escapeHtml(month)}</span><span class="status-pill ${status}">${labelFor(status)}</span></div>
+      `).join('');
+    }
+    document.getElementById('historyOverlay').classList.add('open');
+  }
+  document.getElementById('historyCloseBtn').onclick = ()=>{
+    document.getElementById('historyOverlay').classList.remove('open');
+  };
+  document.getElementById('historyOverlay').addEventListener('click', (e)=>{
+    if(e.target.id === 'historyOverlay') document.getElementById('historyOverlay').classList.remove('open');
+  });
+
+  document.getElementById('btnMemberRole').onclick = async ()=>{
+    role = 'member'; editMode = false; pinAlreadyUnlockedThisSession = false;
+    currentAdminName = null; currentAdminId = null;
+    await saveRole(); applyRoleUI();
+  };
+  document.getElementById('btnAdminRole').onclick = async ()=>{
+    if(role === 'admin'){ return; }
+    const admins = await loadAdminsList();
+    openPinModal(admins.length ? 'unlock' : 'setup');
+  };
+
+  const pinOverlay = document.getElementById('pinOverlay');
+  const pinNameInput = document.getElementById('pinNameInput');
+  const pinInput = document.getElementById('pinInput');
+  const pinConfirmInput = document.getElementById('pinConfirmInput');
+  const pinError = document.getElementById('pinError');
+  const pinTitle = document.getElementById('pinModalTitle');
+  const pinSub = document.getElementById('pinModalSub');
+  let pinModalMode = 'unlock';
+
+  function openPinModal(mode){
+    pinModalMode = mode;
+    pinNameInput.value = '';
+    pinInput.value = '';
+    pinConfirmInput.value = '';
+    pinError.textContent = '';
+    const needName = (mode==='setup' || mode==='unlock' || mode==='addAdmin');
+    const needConfirm = (mode==='setup' || mode==='change' || mode==='addAdmin');
+    pinNameInput.style.display = needName ? 'block' : 'none';
+    pinConfirmInput.style.display = needConfirm ? 'block' : 'none';
+    pinConfirmInput.placeholder = 'Confirm PIN';
+    if(mode === 'setup'){
+      pinTitle.textContent = 'Set Up the First Admin';
+      pinSub.textContent = 'No admin exists yet for this circle. Enter your name and choose a PIN — anyone with this name+PIN can edit as Admin.';
+    } else if(mode === 'unlock'){
+      pinTitle.textContent = 'Enter Admin PIN';
+      pinSub.textContent = 'Enter your registered name and PIN to unlock editing on this device.';
+    } else if(mode === 'change'){
+      pinTitle.textContent = 'Change Your PIN';
+      pinSub.textContent = `Set a new PIN for ${currentAdminName || 'your account'}.`;
+    } else if(mode === 'addAdmin'){
+      pinTitle.textContent = 'Add Another Admin';
+      pinSub.textContent = 'They will use this name and PIN to unlock Admin mode themselves.';
+    }
+    pinOverlay.classList.add('open');
+    setTimeout(()=>(needName ? pinNameInput : pinInput).focus(), 50);
+  }
+  function closePinModal(){ pinOverlay.classList.remove('open'); }
+
+  document.getElementById('pinCancelBtn').onclick = closePinModal;
+  pinOverlay.addEventListener('click', (e)=>{ if(e.target === pinOverlay) closePinModal(); });
+
+  document.getElementById('pinSubmitBtn').onclick = async ()=>{
+    const val = pinInput.value.trim();
+    if(!val || val.length < 4){
+      pinError.textContent = 'PIN must be at least 4 digits.';
+      return;
+    }
+    if(pinModalMode === 'setup'){
+      const name = pinNameInput.value.trim();
+      if(!name){ pinError.textContent = 'Please enter your name.'; return; }
+      if(val !== pinConfirmInput.value.trim()){ pinError.textContent = 'PINs do not match.'; return; }
+      const h = await hashPin(val);
+      const admin = {id: uid(), name, pinHash: h};
+      await saveAdminsList([admin]);
+      currentAdminName = name; currentAdminId = admin.id;
+      closePinModal();
+      role = 'admin'; pinAlreadyUnlockedThisSession = true;
+      await saveRole(); applyRoleUI();
+    } else if(pinModalMode === 'unlock'){
+      const name = pinNameInput.value.trim();
+      if(!name){ pinError.textContent = 'Please enter your name.'; return; }
+      const admins = await loadAdminsList();
+      const match = admins.find(a=>a.name.toLowerCase() === name.toLowerCase());
+      if(!match){ pinError.textContent = 'No admin found with that name.'; return; }
+      const h = await hashPin(val);
+      if(h !== match.pinHash){
+        pinError.textContent = 'Incorrect PIN.';
+        pinInput.value = ''; pinInput.focus();
+        return;
+      }
+      currentAdminName = match.name; currentAdminId = match.id;
+      closePinModal();
+      role = 'admin'; pinAlreadyUnlockedThisSession = true;
+      await saveRole(); applyRoleUI();
+    } else if(pinModalMode === 'change'){
+      if(val !== pinConfirmInput.value.trim()){ pinError.textContent = 'PINs do not match.'; return; }
+      const admins = await loadAdminsList();
+      const idx = admins.findIndex(a=>a.id === currentAdminId);
+      if(idx >= 0){
+        admins[idx].pinHash = await hashPin(val);
+        await saveAdminsList(admins);
+      }
+      closePinModal();
+    } else if(pinModalMode === 'addAdmin'){
+      const name = pinNameInput.value.trim();
+      if(!name){ pinError.textContent = 'Please enter a name.'; return; }
+      if(val !== pinConfirmInput.value.trim()){ pinError.textContent = 'PINs do not match.'; return; }
+      const admins = await loadAdminsList();
+      if(admins.some(a=>a.name.toLowerCase() === name.toLowerCase())){
+        pinError.textContent = 'That name is already registered.';
+        return;
+      }
+      const h = await hashPin(val);
+      admins.push({id: uid(), name, pinHash: h});
+      await saveAdminsList(admins);
+      logAction(`Added admin ${name}`);
+      await persist();
+      closePinModal();
+      renderAdminsList();
+    }
+  };
+  pinInput.addEventListener('keydown', e=>{ if(e.key==='Enter' && pinConfirmInput.style.display==='none') document.getElementById('pinSubmitBtn').click(); });
+  pinConfirmInput.addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('pinSubmitBtn').click(); });
+  pinNameInput.addEventListener('keydown', e=>{ if(e.key==='Enter') pinInput.focus(); });
 
   document.getElementById('editToggle').onclick = ()=>{
     editMode = !editMode;
@@ -800,10 +1458,22 @@ footer{
   };
 
   document.getElementById('saveSettings').onclick = async ()=>{
+    const newMonth = document.getElementById('inpCurrentMonth').value.trim() || state.currentMonth;
+    if(newMonth !== state.currentMonth){
+      state.members.forEach(m=>{
+        m.history = m.history || {};
+        m.history[state.currentMonth] = m.contribution;
+        m.contribution = 'pending';
+      });
+      logAction(`Advanced month from ${state.currentMonth} to ${newMonth}`);
+    }
     state.circleName = document.getElementById('inpCircleName').value || state.circleName;
     state.circleSub = document.getElementById('inpCircleSub').value || state.circleSub;
     state.monthlyAmount = Number(document.getElementById('inpMonthly').value) || state.monthlyAmount;
     state.cycleNumber = Number(document.getElementById('inpCycle').value) || state.cycleNumber;
+    state.currentMonth = newMonth;
+    state.dueDateNote = document.getElementById('inpDueDate').value || state.dueDateNote;
+    state.lateFeeAmount = Number(document.getElementById('inpLateFee').value) || 0;
     await persist();
     render();
   };
@@ -812,26 +1482,49 @@ footer{
     const inp = document.getElementById('inpNewMember');
     const name = inp.value.trim();
     if(!name) return;
-    state.members.push({id: uid(), name, received:false, contribution:'pending'});
+    state.members.push({id: uid(), name, received:false, receivedMonth:null, contribution:'pending', history:{}});
+    logAction(`Added member ${name}`);
     inp.value = '';
     await persist();
     render();
   };
 
-  document.getElementById('connectSheetsBtn').onclick = async ()=>{
-    const url = document.getElementById('inpSheetsUrl').value.trim();
-    if(!url) return;
-    sheetsUrl = url;
-    await saveConfig();
-    const ok = await loadFromSheets();
-    if(!ok){
-      // seed the sheet with whatever local state we currently have
-      await persist();
-    }
-    render();
+  document.getElementById('addAdminBtn').onclick = ()=>{ openPinModal('addAdmin'); };
+  document.getElementById('changePinBtn').onclick = ()=>{ openPinModal('change'); };
+  document.getElementById('lockNowBtn').onclick = async ()=>{
+    role = 'member'; editMode = false; pinAlreadyUnlockedThisSession = false;
+    currentAdminName = null; currentAdminId = null;
+    await saveRole(); applyRoleUI();
   };
 
-  loadState();
+  document.getElementById('printBtn').onclick = ()=>{ window.print(); };
+  document.getElementById('exportCsvBtn').onclick = ()=>{
+    const months = new Set();
+    state.members.forEach(m=>Object.keys(m.history || {}).forEach(mo=>months.add(mo)));
+    months.add(state.currentMonth);
+    const monthList = Array.from(months);
+    let csv = 'Name,' + monthList.map(m=>`"${m}"`).join(',') + ',Last Payout Month\n';
+    state.members.forEach(m=>{
+      const cells = monthList.map(mo => mo === state.currentMonth ? m.contribution : (m.history[mo] || ''));
+      csv += `"${m.name}",${cells.join(',')},"${m.receivedMonth || ''}"\n`;
+    });
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = (state.circleName || 'circle').replace(/[^a-z0-9]/gi,'-') + '-ledger.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  document.getElementById('searchMember').addEventListener('input', e=>{ searchTerm = e.target.value; render(); });
+  document.getElementById('filterStatus').addEventListener('change', e=>{ filterStatus = e.target.value; render(); });
+
+  setInterval(()=>{ if(!(role==='admin' && editMode)) refresh(); }, REFRESH_MS);
+
+  init();
 })();
 </script>
 </body>
