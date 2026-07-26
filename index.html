@@ -903,7 +903,8 @@ footer{
     currentMonth: monthLabelNow(),
     dueDateNote: "25th of each month",
     members: [],
-    actionLog: []
+    actionLog: [],
+    admins: []
   };
 
   function monthLabelNow(){
@@ -930,7 +931,6 @@ footer{
 
   const DATA_KEY = 'welfare-circle-state';
   const ROLE_KEY = 'welfare-circle-role';
-  const ADMINS_KEY = 'welfare-circle-admins';
   const REFRESH_MS = 20000;
 
   async function hashPin(pin){
@@ -939,24 +939,17 @@ footer{
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
   }
 
-  async function loadAdminsList(){
-    try{
-      const res = await window.storage.get(ADMINS_KEY, true);
-      return JSON.parse(res.value) || [];
-    }catch(e){ return []; }
-  }
-  async function saveAdminsList(list){
-    try{ await window.storage.set(ADMINS_KEY, JSON.stringify(list), true); }catch(e){}
-  }
+  // Admin accounts live inside `state.admins` now, so they sync through the
+  // same Google Sheet as everything else — any admin can log in from any device.
+  function getAdmins(){ return (state && Array.isArray(state.admins)) ? state.admins : []; }
 
   async function loadRole(){
     try{
-      const res = await window.storage.get(ROLE_KEY, false);
-      role = res.value === 'admin' ? 'admin' : 'member';
+      role = localStorage.getItem(ROLE_KEY) === 'admin' ? 'admin' : 'member';
     }catch(e){ role = 'member'; }
   }
   async function saveRole(){
-    try{ await window.storage.set(ROLE_KEY, role, false); }catch(e){}
+    try{ localStorage.setItem(ROLE_KEY, role); }catch(e){}
   }
 
   let pinAlreadyUnlockedThisSession = false;
@@ -986,9 +979,11 @@ footer{
 
   async function loadFromLocal(){
     try{
-      const res = await window.storage.get(DATA_KEY, true);
-      state = JSON.parse(res.value);
+      const raw = localStorage.getItem(DATA_KEY);
+      if(!raw) throw new Error('no local copy');
+      state = JSON.parse(raw);
       state.actionLog = state.actionLog || [];
+      state.admins = Array.isArray(state.admins) ? state.admins : [];
       state.members.forEach(m=>{ m.history = m.history || {}; if(m.receivedMonth===undefined) m.receivedMonth = null; });
       if(state.lateFeeAmount===undefined) state.lateFeeAmount = 0;
       if(state.dueDateNote===undefined) state.dueDateNote = "25th of each month";
@@ -996,9 +991,7 @@ footer{
       lastSyncTime = new Date();
     }catch(e){
       state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-      if(role === 'admin'){
-        try{ await window.storage.set(DATA_KEY, JSON.stringify(state), true); }catch(err){}
-      }
+      try{ localStorage.setItem(DATA_KEY, JSON.stringify(state)); }catch(err){}
       syncStatus = 'local';
     }
   }
@@ -1017,6 +1010,7 @@ footer{
         currentMonth: data.currentMonth || monthLabelNow(),
         dueDateNote: data.dueDateNote || "25th of each month",
         actionLog: Array.isArray(data.actionLog) ? data.actionLog : [],
+        admins: Array.isArray(data.admins) ? data.admins : [],
         members: Array.isArray(data.members) ? data.members.map(m=>({
           id: m.id, name: m.name,
           received: m.received === true || m.received === 'TRUE' || m.received === 'true',
@@ -1047,7 +1041,7 @@ footer{
       }catch(e){ syncStatus = 'error'; }
     } else {
       try{
-        await window.storage.set(DATA_KEY, JSON.stringify(state), true);
+        localStorage.setItem(DATA_KEY, JSON.stringify(state));
         syncStatus = 'local';
         lastSyncTime = new Date();
       }catch(e){}
@@ -1060,8 +1054,8 @@ footer{
     const label = document.getElementById('syncLabel');
     pill.className = 'sync-pill ' + syncStatus;
     const timeStr = lastSyncTime ? ' · ' + lastSyncTime.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '';
-    if(syncStatus === 'connected') label.textContent = 'Synced to Data' + timeStr;
-    else if(syncStatus === 'error') label.textContent = 'Data unreachable — last saved copy';
+    if(syncStatus === 'connected') label.textContent = 'Synced to Sheet' + timeStr;
+    else if(syncStatus === 'error') label.textContent = 'Sheet unreachable — last saved copy';
     else label.textContent = 'Local demo data' + timeStr;
   }
 
@@ -1293,8 +1287,8 @@ footer{
       : 'Member view — read only. Ask your Treasurer or Chairperson to update records.';
   }
 
-  async function renderAdminsList(){
-    const list = await loadAdminsList();
+  function renderAdminsList(){
+    const list = getAdmins();
     const el = document.getElementById('adminsList');
     if(!list.length){
       el.innerHTML = `<div class="empty-note">No admins registered yet.</div>`;
@@ -1309,14 +1303,12 @@ footer{
     el.querySelectorAll('button[data-admin-id]').forEach(btn=>{
       btn.onclick = async ()=>{
         if(!confirm('Remove this admin? They will need to be re-added to regain access.')) return;
-        let admins = await loadAdminsList();
-        const removed = admins.find(a=>a.id===btn.dataset.adminId);
-        admins = admins.filter(a=>a.id!==btn.dataset.adminId);
-        await saveAdminsList(admins);
+        const removed = state.admins.find(a=>a.id===btn.dataset.adminId);
+        state.admins = state.admins.filter(a=>a.id!==btn.dataset.adminId);
         if(removed){
           logAction(`Removed admin ${removed.name}`);
-          await persist();
         }
+        await persist();
         renderAdminsList();
       };
     });
@@ -1350,8 +1342,7 @@ footer{
   };
   document.getElementById('btnAdminRole').onclick = async ()=>{
     if(role === 'admin'){ return; }
-    const admins = await loadAdminsList();
-    openPinModal(admins.length ? 'unlock' : 'setup');
+    openPinModal(getAdmins().length ? 'unlock' : 'setup');
   };
 
   const pinOverlay = document.getElementById('pinOverlay');
@@ -1407,7 +1398,9 @@ footer{
       if(val !== pinConfirmInput.value.trim()){ pinError.textContent = 'PINs do not match.'; return; }
       const h = await hashPin(val);
       const admin = {id: uid(), name, pinHash: h};
-      await saveAdminsList([admin]);
+      state.admins = [admin];
+      logAction(`Set up admin ${name}`);
+      await persist();
       currentAdminName = name; currentAdminId = admin.id;
       closePinModal();
       role = 'admin'; pinAlreadyUnlockedThisSession = true;
@@ -1415,8 +1408,7 @@ footer{
     } else if(pinModalMode === 'unlock'){
       const name = pinNameInput.value.trim();
       if(!name){ pinError.textContent = 'Please enter your name.'; return; }
-      const admins = await loadAdminsList();
-      const match = admins.find(a=>a.name.toLowerCase() === name.toLowerCase());
+      const match = getAdmins().find(a=>a.name.toLowerCase() === name.toLowerCase());
       if(!match){ pinError.textContent = 'No admin found with that name.'; return; }
       const h = await hashPin(val);
       if(h !== match.pinHash){
@@ -1430,25 +1422,22 @@ footer{
       await saveRole(); applyRoleUI();
     } else if(pinModalMode === 'change'){
       if(val !== pinConfirmInput.value.trim()){ pinError.textContent = 'PINs do not match.'; return; }
-      const admins = await loadAdminsList();
-      const idx = admins.findIndex(a=>a.id === currentAdminId);
+      const idx = state.admins.findIndex(a=>a.id === currentAdminId);
       if(idx >= 0){
-        admins[idx].pinHash = await hashPin(val);
-        await saveAdminsList(admins);
+        state.admins[idx].pinHash = await hashPin(val);
+        await persist();
       }
       closePinModal();
     } else if(pinModalMode === 'addAdmin'){
       const name = pinNameInput.value.trim();
       if(!name){ pinError.textContent = 'Please enter a name.'; return; }
       if(val !== pinConfirmInput.value.trim()){ pinError.textContent = 'PINs do not match.'; return; }
-      const admins = await loadAdminsList();
-      if(admins.some(a=>a.name.toLowerCase() === name.toLowerCase())){
+      if(getAdmins().some(a=>a.name.toLowerCase() === name.toLowerCase())){
         pinError.textContent = 'That name is already registered.';
         return;
       }
       const h = await hashPin(val);
-      admins.push({id: uid(), name, pinHash: h});
-      await saveAdminsList(admins);
+      state.admins.push({id: uid(), name, pinHash: h});
       logAction(`Added admin ${name}`);
       await persist();
       closePinModal();
