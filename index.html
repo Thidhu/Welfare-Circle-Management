@@ -1060,8 +1060,8 @@ footer{
     const label = document.getElementById('syncLabel');
     pill.className = 'sync-pill ' + syncStatus;
     const timeStr = lastSyncTime ? ' · ' + lastSyncTime.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '';
-    if(syncStatus === 'connected') label.textContent = 'Synced to Sheet' + timeStr;
-    else if(syncStatus === 'error') label.textContent = 'Sheet unreachable — last saved copy';
+    if(syncStatus === 'connected') label.textContent = 'Synced to Data' + timeStr;
+    else if(syncStatus === 'error') label.textContent = 'Data unreachable — last saved copy';
     else label.textContent = 'Local demo data' + timeStr;
   }
 
