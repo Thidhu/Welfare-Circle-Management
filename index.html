@@ -1031,14 +1031,22 @@ footer{
   async function persist(){
     if(SHEETS_URL){
       try{
-        await fetch(SHEETS_URL, {
+        const res = await fetch(SHEETS_URL, {
           method:'POST',
           headers:{'Content-Type':'text/plain;charset=utf-8'},
           body: JSON.stringify(state)
         });
+        if(!res.ok) throw new Error('bad response: ' + res.status);
+        const result = await res.json().catch(()=>null);
+        if(result && result.ok === false) throw new Error(result.error || 'save rejected');
         syncStatus = 'connected';
         lastSyncTime = new Date();
-      }catch(e){ syncStatus = 'error'; }
+      }catch(e){
+        syncStatus = 'error';
+        console.error('Sheet save failed:', e);
+      }
+      // always keep a local fallback copy too, so a failed sheet write isn't a total loss
+      try{ localStorage.setItem(DATA_KEY, JSON.stringify(state)); }catch(e){}
     } else {
       try{
         localStorage.setItem(DATA_KEY, JSON.stringify(state));
